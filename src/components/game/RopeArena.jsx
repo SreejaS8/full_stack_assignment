@@ -67,7 +67,7 @@ function RopeArena({ lastRoundWinner, offset, players }) {
           transition={{ ...spring.gentle, y: { duration: 0.9, repeat: Infinity, ease: 'easeInOut' } }}
           style={{ transformOrigin: '230px 248px' }}
         >
-          <ArenaPlayer accent="p1-shirt" facing="right" label={players.player1} x={74} />
+          <ArenaPlayer facing="right" label={players.player1} stroke="#0f172a" x={74} />
         </motion.g>
 
         <motion.g
@@ -76,7 +76,7 @@ function RopeArena({ lastRoundWinner, offset, players }) {
           transition={{ ...spring.gentle, y: { duration: 0.9, repeat: Infinity, ease: 'easeInOut', delay: 0.08 } }}
           style={{ transformOrigin: '670px 248px' }}
         >
-          <ArenaPlayer accent="p2-shirt" facing="left" label={players.player2} x={596} />
+          <ArenaPlayer facing="left" label={players.player2} stroke="#0f766e" x={596} />
         </motion.g>
 
         <g>
@@ -108,39 +108,35 @@ function SimpleKnotRope() {
   );
 }
 
-function ArenaPlayer({ accent, facing, label, x }) {
+function ArenaPlayer({ facing, label, stroke, x }) {
   const flip = facing === 'left' ? 'scale(-1 1)' : '';
   const originX = facing === 'left' ? x + 230 : x;
   const badgeX = facing === 'left' ? x + 22 : x + 18;
+  const playerId = facing === 'left' ? 'P2' : 'P1';
 
   return (
     <g>
       <g transform={`translate(${originX} 0) ${flip}`}>
-        <ellipse cx="116" cy="292" rx="96" ry="18" fill="#020617" opacity="0.16" />
-        <path d="M48 248l-28 40" stroke="#0f172a" strokeWidth="18" strokeLinecap="round" />
-        <path d="M138 248l50 38" stroke="#0f172a" strokeWidth="18" strokeLinecap="round" />
-        <path d="M49 248l-33 42" stroke="#fed7aa" strokeWidth="11" strokeLinecap="round" />
-        <path d="M138 248l52 38" stroke="#fed7aa" strokeWidth="11" strokeLinecap="round" />
-        <path d="M47 286h-29" stroke="#020617" strokeWidth="13" strokeLinecap="round" />
-        <path d="M191 286h33" stroke="#020617" strokeWidth="13" strokeLinecap="round" />
-
-        <path d="M55 158c23-20 76-24 109-3l-11 104H64z" fill={`url(#${accent})`} stroke="#020617" strokeWidth="5" />
-        <path d="M68 166c17 14 57 18 80 0" fill="none" stroke="#fff" strokeOpacity="0.22" strokeWidth="7" strokeLinecap="round" />
-        <path d="M51 177L16 194" stroke="#fed7aa" strokeWidth="20" strokeLinecap="round" />
-        <path d="M151 174l73 28" stroke="#fed7aa" strokeWidth="20" strokeLinecap="round" />
-        <path d="M20 194l51-2" stroke="#0f172a" strokeWidth="9" strokeLinecap="round" opacity="0.9" />
-        <path d="M216 201l-54-6" stroke="#0f172a" strokeWidth="9" strokeLinecap="round" opacity="0.9" />
-
-        <circle cx="102" cy="105" r="43" fill="#fed7aa" stroke="#020617" strokeWidth="5" />
-        <path d="M62 94c17-36 75-45 111-5-30-5-63-1-98 14z" fill="#7c2d12" />
-        <path d="M59 98c29 13 78 13 119-2" fill="none" stroke="#f97316" strokeWidth="10" strokeLinecap="round" />
-        <circle cx="87" cy="110" r="5" fill="#020617" />
-        <circle cx="116" cy="110" r="5" fill="#020617" />
-        <path d="M88 131c16 9 31 8 43-3" fill="none" stroke="#020617" strokeWidth="4" strokeLinecap="round" />
-        <path d="M67 84c11-34 82-48 107-3-27-10-62-8-107 3z" fill="#92400e" />
-        <rect x="71" y="148" width="66" height="18" rx="9" fill="#fff" opacity="0.9" />
-        <text x="104" y="162" textAnchor="middle" className="fill-slate-950 text-[13px] font-black">
-          {facing === 'left' ? 'P2' : 'P1'}
+        <ellipse cx="116" cy="292" rx="88" ry="16" fill="#020617" opacity="0.14" />
+        <g fill="none" stroke={stroke} strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="104" cy="108" r="26" fill="#fff7ed" strokeWidth="7" />
+          <path d="M104 136l-12 82" strokeWidth="12" />
+          <path d="M96 166l-54 20" strokeWidth="11" />
+          <path d="M96 168l104 22" strokeWidth="11" />
+          <path d="M92 218l-42 62" strokeWidth="12" />
+          <path d="M92 218l66 60" strokeWidth="12" />
+          <path d="M50 280h-32" strokeWidth="10" />
+          <path d="M158 278h34" strokeWidth="10" />
+        </g>
+        <path d="M86 101h36" stroke="#020617" strokeWidth="4" strokeLinecap="round" />
+        <circle cx="96" cy="113" r="4" fill="#020617" />
+        <circle cx="114" cy="113" r="4" fill="#020617" />
+        <path d="M96 124c8 5 16 5 23 0" fill="none" stroke="#020617" strokeWidth="3" strokeLinecap="round" />
+        <circle cx="50" cy="186" r="10" fill="#fff7ed" stroke={stroke} strokeWidth="5" />
+        <circle cx="200" cy="190" r="10" fill="#fff7ed" stroke={stroke} strokeWidth="5" />
+        <rect x="76" y="144" width="56" height="24" rx="12" fill="#ffffff" stroke={stroke} strokeWidth="4" />
+        <text x="104" y="161" textAnchor="middle" className="fill-slate-950 text-[13px] font-black">
+          {playerId}
         </text>
       </g>
 
