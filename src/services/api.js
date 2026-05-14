@@ -35,6 +35,9 @@ export async function saveMatch(payload) {
 
 export async function getMatches() {
   const { data } = await api.get('/matches');
+  if (!Array.isArray(data)) {
+    throw new Error('Match history API returned an unexpected response.');
+  }
   return data;
 }
 
