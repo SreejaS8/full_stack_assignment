@@ -1,7 +1,8 @@
 export { ROUND_SECONDS } from '../constants/game.js';
 
-export function buildMatchPayload(state, stats) {
+export function buildMatchPayload(state, stats, matchId) {
   return {
+    matchId,
     player1: state.players.player1,
     player2: state.players.player2,
     winner: state.winner.name,

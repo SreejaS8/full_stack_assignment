@@ -9,8 +9,9 @@ export default async function connectDB() {
     return null;
   }
 
+  console.log(`[mongo] Connecting to database "${dbName}"...`);
   mongoose.set('strictQuery', true);
   const connection = await mongoose.connect(uri, { dbName });
-  console.log(`MongoDB connected: ${connection.connection.host}/${dbName}`);
+  console.log(`[mongo] Connected: ${connection.connection.host}/${dbName}`);
   return connection;
 }

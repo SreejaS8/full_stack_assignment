@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Confetti from 'react-confetti';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowRotateLeft, FaChartSimple, FaTrophy } from 'react-icons/fa6';
@@ -14,6 +14,8 @@ export default function Result() {
   const navigate = useNavigate();
   const game = useGame();
   const [saveState, setSaveState] = useState('idle');
+  const hasSavedMatch = useRef(false);
+  const matchId = useRef(crypto.randomUUID());
 
   useEffect(() => {
     if (!game.winner) {
@@ -22,9 +24,10 @@ export default function Result() {
   }, [game.winner, navigate]);
 
   useEffect(() => {
-    if (!game.winner || saveState !== 'idle') return undefined;
+    if (!game.winner || hasSavedMatch.current) return undefined;
 
-    const payload = buildMatchPayload(game, game.stats);
+    hasSavedMatch.current = true;
+    const payload = buildMatchPayload(game, game.stats, matchId.current);
     localStorage.setItem('last-tugmath-match', JSON.stringify(payload));
 
     setSaveState('saving');

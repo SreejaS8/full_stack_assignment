@@ -14,11 +14,13 @@ export default function MatchHistory() {
     getMatches()
       .then((data) => {
         if (!active) return;
+        console.info('[history] Loaded matches:', data.length);
         setMatches(Array.isArray(data) ? data : []);
         setStatus('ready');
       })
-      .catch(() => {
+      .catch((error) => {
         if (!active) return;
+        console.error('[history] Unable to load match history:', error.message);
         setStatus('offline');
       });
 

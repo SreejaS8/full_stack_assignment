@@ -11,13 +11,32 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
 
-app.use(cors());
+console.log('[env] PORT:', PORT);
+console.log('[env] MONGODB_DB_NAME:', process.env.MONGODB_DB_NAME || 'match_history');
+console.log('[env] MONGODB_URI configured:', Boolean(process.env.MONGODB_URI));
+
+app.use(
+  cors({
+    origin: [CLIENT_ORIGIN, 'http://127.0.0.1:5173', 'http://localhost:5173'],
+  }),
+);
 app.use(express.json());
 app.use(morgan('dev'));
 
+app.use((req, _res, next) => {
+  console.log(`[api] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'tugmath-api' });
+  res.json({
+    status: 'ok',
+    service: 'tugmath-api',
+    database: process.env.MONGODB_DB_NAME || 'match_history',
+    mongoConfigured: Boolean(process.env.MONGODB_URI),
+  });
 });
 
 app.use('/api', matchRoutes);

@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
+import crypto from 'node:crypto';
 import Match from '../models/Match.js';
+
+function createMatchId(payload) {
+  return crypto.createHash('sha256').update(JSON.stringify(payload)).digest('hex');
+}
 
 export async function createMatch(req, res, next) {
   try {
@@ -9,7 +14,17 @@ export async function createMatch(req, res, next) {
       });
     }
 
-    const match = await Match.create(req.body);
+    const payload = {
+      ...req.body,
+      matchId: req.body.matchId || createMatchId(req.body),
+    };
+
+    const match = await Match.findOneAndUpdate(
+      { matchId: payload.matchId },
+      { $setOnInsert: payload },
+      { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true },
+    );
+
     return res.status(201).json(match);
   } catch (error) {
     return next(error);

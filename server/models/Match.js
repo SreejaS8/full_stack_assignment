@@ -21,6 +21,7 @@ const roundHistorySchema = new mongoose.Schema(
 
 const matchSchema = new mongoose.Schema(
   {
+    matchId: { type: String, required: true, trim: true },
     player1: { type: String, required: true, trim: true },
     player2: { type: String, required: true, trim: true },
     winner: { type: String, required: true, trim: true },
@@ -41,5 +42,6 @@ const matchSchema = new mongoose.Schema(
 );
 
 matchSchema.index({ createdAt: -1 });
+matchSchema.index({ matchId: 1 }, { unique: true, sparse: true });
 
 export default mongoose.model('Match', matchSchema, 'history');
