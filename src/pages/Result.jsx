@@ -66,7 +66,7 @@ export default function Result() {
               navigate('/');
             }}
           >
-            Replay Match
+            Restart
           </Button>
         </GlassPanel>
 
