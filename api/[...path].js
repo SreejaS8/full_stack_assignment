@@ -1,6 +1,7 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
+import mongoose from 'mongoose';
 import connectDB from '../server/config/db.js';
 import errorHandler from '../server/middleware/errorHandler.js';
 import matchRoutes from '../server/routes/matchRoutes.js';
@@ -35,7 +36,12 @@ app.use(async (_req, _res, next) => {
 });
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true });
+  res.json({
+    ok: true,
+    mongoReadyState: mongoose.connection.readyState,
+    dbName: mongoose.connection.name,
+    hasMongoUri: Boolean(process.env.MONGODB_URI),
+  });
 });
 
 app.use('/api', matchRoutes);

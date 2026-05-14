@@ -29,7 +29,9 @@ export default function Result() {
     const payload = buildMatchPayload(game, game.stats, matchId.current);
     localStorage.setItem('last-tugmath-match', JSON.stringify(payload));
 
-    saveMatch(payload).catch(() => {});
+    saveMatch(payload).catch((error) => {
+      console.error('[result] Unable to save match:', error);
+    });
 
     return undefined;
   }, [game]);
