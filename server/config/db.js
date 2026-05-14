@@ -4,6 +4,14 @@ export default async function connectDB() {
   const uri = process.env.MONGODB_URI;
   const dbName = process.env.MONGODB_DB_NAME || 'match_history';
 
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  if (mongoose.connection.readyState === 2) {
+    return mongoose.connection.asPromise();
+  }
+
   if (!uri) {
     console.warn('MONGODB_URI is not set. API will start without a database connection.');
     return null;
