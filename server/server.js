@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.js';
 import matchRoutes from './routes/matchRoutes.js';
 
+dotenv.config({ path: '.env.local' });
 dotenv.config();
 
 const app = express();

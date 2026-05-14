@@ -22,7 +22,7 @@ export async function getMatches(_req, res, next) {
       return res.json([]);
     }
 
-    const matches = await Match.find().sort({ createdAt: -1 }).limit(25);
+    const matches = await Match.find().sort({ createdAt: -1 }).limit(25).lean();
     return res.json(matches);
   } catch (error) {
     return next(error);

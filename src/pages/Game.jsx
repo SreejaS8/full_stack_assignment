@@ -49,9 +49,20 @@ export default function Game() {
     onExpire: game.timeoutRound,
   });
 
+  const countdownMessage =
+    game.currentRound > 1
+      ? game.lastRoundWinner
+        ? `${game.players[game.lastRoundWinner]} won the last round`
+        : 'Last round ended with no correct answer'
+      : 'Get ready to pull';
+
   return (
     <PageTransition className="relative w-full">
-      <CountdownOverlay visible={game.status === 'countdown'} value={countdown} />
+      <CountdownOverlay
+        message={countdownMessage}
+        visible={game.status === 'countdown'}
+        value={countdown}
+      />
       <div className="grid min-h-[calc(100vh-2rem)] w-full grid-cols-1 gap-4 lg:grid-cols-[minmax(220px,0.86fr)_minmax(360px,1.1fr)_minmax(220px,0.86fr)]">
         <PlayerPanel
           accent="#0f172a"

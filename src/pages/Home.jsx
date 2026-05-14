@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaBolt, FaGraduationCap } from 'react-icons/fa6';
 import MatchSetup from '../components/game/MatchSetup.jsx';
+import MatchHistory from '../components/history/MatchHistory.jsx';
 import PageTransition from '../components/animations/PageTransition.jsx';
 import GlassPanel from '../components/ui/GlassPanel.jsx';
 import SegmentedControl from '../components/ui/SegmentedControl.jsx';
@@ -14,7 +15,7 @@ export default function Home() {
   const { startMatch } = useGame();
 
   return (
-    <PageTransition className="grid w-full grid-cols-1 items-center gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+    <PageTransition className="grid w-full grid-cols-1 items-center gap-6 xl:grid-cols-[0.9fr_0.82fr_0.78fr]">
       <div>
         <motion.div
           className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 text-sm font-bold text-teal-700 ring-1 ring-white/80"
@@ -64,6 +65,8 @@ export default function Home() {
           <MatchSetup difficulty={difficulty} onStart={startMatch} />
         </div>
       </GlassPanel>
+
+      <MatchHistory />
     </PageTransition>
   );
 }

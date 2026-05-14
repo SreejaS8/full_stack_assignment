@@ -11,10 +11,28 @@ export function buildMatchPayload(state, stats) {
       player2: state.scores.player2,
     },
     stats,
+    roundHistory: state.history.map((round) => ({
+      round: round.round,
+      question: round.question.prompt,
+      answer: round.question.answer,
+      winner: round.winner ? state.players[round.winner] : null,
+      responseTime: round.responseTime,
+    })),
   };
 }
 
 export function formatSeconds(value) {
   if (value === null || Number.isNaN(value)) return 'N/A';
   return `${value.toFixed(2)}s`;
+}
+
+export function formatMatchDate(value) {
+  if (!value) return 'Recent';
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(value));
 }

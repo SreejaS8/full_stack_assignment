@@ -8,6 +8,17 @@ const scoreSchema = new mongoose.Schema(
   { _id: false },
 );
 
+const roundHistorySchema = new mongoose.Schema(
+  {
+    round: { type: Number, required: true, min: 1 },
+    question: { type: String, required: true, trim: true },
+    answer: { type: Number, required: true },
+    winner: { type: String, default: null, trim: true },
+    responseTime: { type: Number, default: null },
+  },
+  { _id: false },
+);
+
 const matchSchema = new mongoose.Schema(
   {
     player1: { type: String, required: true, trim: true },
@@ -24,8 +35,11 @@ const matchSchema = new mongoose.Schema(
       },
       completedRounds: Number,
     },
+    roundHistory: { type: [roundHistorySchema], default: [] },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );
 
-export default mongoose.model('Match', matchSchema);
+matchSchema.index({ createdAt: -1 });
+
+export default mongoose.model('Match', matchSchema, 'history');
