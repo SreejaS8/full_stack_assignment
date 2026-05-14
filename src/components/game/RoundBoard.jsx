@@ -13,7 +13,6 @@ function RoundBoard({
   players,
   question,
   ropeOffset,
-  shakeKey,
   status,
   timer,
   totalRounds,
@@ -40,7 +39,7 @@ function RoundBoard({
       </div>
 
       <div className="mt-5 space-y-4">
-        <RopeArena offset={ropeOffset} shakeKey={shakeKey} />
+        <RopeArena lastRoundWinner={lastRoundWinner} offset={ropeOffset} players={players} />
         <RoundStatus lastRoundWinner={lastRoundWinner} players={players} status={status} />
         <Button className="w-full lg:hidden" variant="secondary" onClick={() => navigate('/')}>
           Exit Match

@@ -3,19 +3,16 @@ import { motion } from 'framer-motion';
 import { spring } from '../../constants/animation.js';
 
 const ARENA_VIEWBOX = '0 0 900 360';
-const P1_svg = '/assets/P1_svg.svg';
-const P2_svg = '/assets/P2_svg.svg';
-const rope_svg = '/assets/rope_svg.svg';
-const knot_svg = '/assets/knot_svg.svg';
 
-function RopeArena({ offset, shakeKey }) {
+function RopeArena({ lastRoundWinner, offset, players }) {
   const pull = Math.max(-1, Math.min(1, offset / 150));
-  const ropeX = pull * 96;
+  const winnerPull = lastRoundWinner === 'player1' ? -1 : lastRoundWinner === 'player2' ? 1 : null;
+  const ropeX = (winnerPull ?? pull) * 96;
   const p1Lean = -6 - Math.max(0, -pull) * 5;
   const p2Lean = 6 + Math.max(0, pull) * 5;
 
   return (
-    <div className="arena-stage relative h-56 w-full overflow-hidden rounded-[1.75rem] ring-1 ring-white/70">
+    <div className="arena-stage relative h-60 w-full overflow-hidden rounded-[1.75rem] ring-1 ring-white/70">
       <svg
         className="h-full w-full"
         role="img"
@@ -27,6 +24,14 @@ function RopeArena({ offset, shakeKey }) {
           <filter id="arena-shadow" x="-20%" y="-20%" width="140%" height="150%">
             <feDropShadow dx="0" dy="16" stdDeviation="12" floodColor="#0f172a" floodOpacity="0.22" />
           </filter>
+          <linearGradient id="p1-shirt" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stopColor="#1e293b" />
+            <stop offset="100%" stopColor="#020617" />
+          </linearGradient>
+          <linearGradient id="p2-shirt" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stopColor="#14b8a6" />
+            <stop offset="100%" stopColor="#0f766e" />
+          </linearGradient>
           <pattern id="ropePattern" width="36" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
             <rect width="36" height="20" fill="#8a552d" />
             <rect x="0" width="14" height="20" fill="#d79a56" />
@@ -35,6 +40,7 @@ function RopeArena({ offset, shakeKey }) {
         </defs>
 
         <rect width="900" height="360" fill="transparent" />
+        <ellipse cx="450" cy="295" rx="360" ry="34" fill="#064e3b" opacity="0.12" />
         <line x1="450" x2="450" y1="42" y2="310" stroke="#0f172a" strokeOpacity="0.18" strokeWidth="3" />
         <motion.g
           animate={{ scale: [0.92, 1.05, 0.92], opacity: [0.28, 0.85, 0.28] }}
@@ -48,21 +54,11 @@ function RopeArena({ offset, shakeKey }) {
 
         <motion.g
           className="will-change-transform"
-          animate={{ x: ropeX, rotate: [0, pull ? -0.35 : 0, pull ? 0.35 : 0, 0] }}
+          animate={{ x: ropeX }}
           transition={spring.gentle}
           style={{ transformOrigin: '450px 178px' }}
         >
-          <FallbackRope />
-          <image href={rope_svg} x="210" y="159" width="480" height="38" preserveAspectRatio="none" />
-          <motion.g
-            key={shakeKey}
-            animate={{ scale: [1, 1.12, 1], rotate: [0, -8, 8, 0] }}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
-            style={{ transformOrigin: '450px 178px' }}
-          >
-            <FallbackKnot />
-            <image href={knot_svg} x="425" y="150" width="50" height="56" />
-          </motion.g>
+          <SimpleKnotRope />
         </motion.g>
 
         <motion.g
@@ -71,8 +67,7 @@ function RopeArena({ offset, shakeKey }) {
           transition={{ ...spring.gentle, y: { duration: 0.9, repeat: Infinity, ease: 'easeInOut' } }}
           style={{ transformOrigin: '230px 248px' }}
         >
-          <FallbackPlayer x={92} facing="right" />
-          <image href={P1_svg} x="58" y="78" width="270" height="230" />
+          <ArenaPlayer accent="p1-shirt" facing="right" label={players.player1} x={74} />
         </motion.g>
 
         <motion.g
@@ -81,8 +76,7 @@ function RopeArena({ offset, shakeKey }) {
           transition={{ ...spring.gentle, y: { duration: 0.9, repeat: Infinity, ease: 'easeInOut', delay: 0.08 } }}
           style={{ transformOrigin: '670px 248px' }}
         >
-          <FallbackPlayer x={578} facing="left" />
-          <image href={P2_svg} x="572" y="78" width="270" height="230" />
+          <ArenaPlayer accent="p2-shirt" facing="left" label={players.player2} x={596} />
         </motion.g>
 
         <g>
@@ -103,43 +97,60 @@ function RopeArena({ offset, shakeKey }) {
   );
 }
 
-function FallbackRope() {
+function SimpleKnotRope() {
   return (
-    <rect
-      x="210"
-      y="168"
-      width="480"
-      height="20"
-      rx="10"
-      className="fallback-rope"
-      stroke="#4b2d17"
-      strokeWidth="4"
-    />
+    <g>
+      <rect x="210" y="168" width="480" height="20" rx="10" className="fallback-rope" stroke="#4b2d17" strokeWidth="4" />
+      <ellipse cx="450" cy="178" rx="34" ry="25" fill="#d79a56" stroke="#4b2d17" strokeWidth="5" />
+      <path d="M426 166c14 14 34 14 48 0" fill="none" stroke="#5f351d" strokeWidth="6" strokeLinecap="round" />
+      <path d="M426 190c14-14 34-14 48 0" fill="none" stroke="#5f351d" strokeWidth="6" strokeLinecap="round" />
+    </g>
   );
 }
 
-function FallbackKnot() {
-  return <circle cx="450" cy="178" r="22" fill="#f7c06d" stroke="#4b2d17" strokeWidth="5" />;
-}
-
-function FallbackPlayer({ facing, x }) {
+function ArenaPlayer({ accent, facing, label, x }) {
   const flip = facing === 'left' ? 'scale(-1 1)' : '';
   const originX = facing === 'left' ? x + 230 : x;
+  const badgeX = facing === 'left' ? x + 22 : x + 18;
 
   return (
-    <g transform={`translate(${originX} 0) ${flip}`}>
-      <circle cx="72" cy="118" r="42" fill="#ffd0a8" stroke="#0f172a" strokeWidth="5" />
-      <path d="M34 100c16-38 66-48 99-12-25-4-48-1-76 11z" fill="#8f4838" />
-      <rect x="23" y="98" width="112" height="17" rx="8" fill="#e11d48" />
-      <rect x="29" y="94" width="98" height="7" rx="4" fill="#fff" />
-      <circle cx="57" cy="118" r="5" fill="#020617" />
-      <circle cx="84" cy="118" r="5" fill="#020617" />
-      <path d="M61 138c15 8 26 7 36-2" fill="none" stroke="#020617" strokeWidth="4" strokeLinecap="round" />
-      <rect x="52" y="160" width="88" height="58" rx="22" fill="#ef233c" stroke="#0f172a" strokeWidth="5" />
-      <path d="M28 174l174 42" stroke="#ffd0a8" strokeWidth="24" strokeLinecap="round" />
-      <path d="M72 217l-36 66" stroke="#ffd0a8" strokeWidth="20" strokeLinecap="round" />
-      <path d="M120 217l50 63" stroke="#ffd0a8" strokeWidth="20" strokeLinecap="round" />
-      <path d="M64 217h68v42H64z" fill="#fff" />
+    <g>
+      <g transform={`translate(${originX} 0) ${flip}`}>
+        <ellipse cx="116" cy="292" rx="96" ry="18" fill="#020617" opacity="0.16" />
+        <path d="M48 248l-28 40" stroke="#0f172a" strokeWidth="18" strokeLinecap="round" />
+        <path d="M138 248l50 38" stroke="#0f172a" strokeWidth="18" strokeLinecap="round" />
+        <path d="M49 248l-33 42" stroke="#fed7aa" strokeWidth="11" strokeLinecap="round" />
+        <path d="M138 248l52 38" stroke="#fed7aa" strokeWidth="11" strokeLinecap="round" />
+        <path d="M47 286h-29" stroke="#020617" strokeWidth="13" strokeLinecap="round" />
+        <path d="M191 286h33" stroke="#020617" strokeWidth="13" strokeLinecap="round" />
+
+        <path d="M55 158c23-20 76-24 109-3l-11 104H64z" fill={`url(#${accent})`} stroke="#020617" strokeWidth="5" />
+        <path d="M68 166c17 14 57 18 80 0" fill="none" stroke="#fff" strokeOpacity="0.22" strokeWidth="7" strokeLinecap="round" />
+        <path d="M51 177L16 194" stroke="#fed7aa" strokeWidth="20" strokeLinecap="round" />
+        <path d="M151 174l73 28" stroke="#fed7aa" strokeWidth="20" strokeLinecap="round" />
+        <path d="M20 194l51-2" stroke="#0f172a" strokeWidth="9" strokeLinecap="round" opacity="0.9" />
+        <path d="M216 201l-54-6" stroke="#0f172a" strokeWidth="9" strokeLinecap="round" opacity="0.9" />
+
+        <circle cx="102" cy="105" r="43" fill="#fed7aa" stroke="#020617" strokeWidth="5" />
+        <path d="M62 94c17-36 75-45 111-5-30-5-63-1-98 14z" fill="#7c2d12" />
+        <path d="M59 98c29 13 78 13 119-2" fill="none" stroke="#f97316" strokeWidth="10" strokeLinecap="round" />
+        <circle cx="87" cy="110" r="5" fill="#020617" />
+        <circle cx="116" cy="110" r="5" fill="#020617" />
+        <path d="M88 131c16 9 31 8 43-3" fill="none" stroke="#020617" strokeWidth="4" strokeLinecap="round" />
+        <path d="M67 84c11-34 82-48 107-3-27-10-62-8-107 3z" fill="#92400e" />
+        <rect x="71" y="148" width="66" height="18" rx="9" fill="#fff" opacity="0.9" />
+        <text x="104" y="162" textAnchor="middle" className="fill-slate-950 text-[13px] font-black">
+          {facing === 'left' ? 'P2' : 'P1'}
+        </text>
+      </g>
+
+      <g transform={`translate(${badgeX} 30)`}>
+        <rect width="180" height="38" rx="19" fill="#ffffff" opacity="0.9" />
+        <rect width="180" height="38" rx="19" fill="none" stroke="#0f172a" strokeOpacity="0.1" />
+        <text x="90" y="25" textAnchor="middle" className="fill-slate-950 text-[18px] font-black">
+          {label}
+        </text>
+      </g>
     </g>
   );
 }

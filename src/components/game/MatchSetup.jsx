@@ -30,7 +30,7 @@ export default function MatchSetup({ difficulty, onStart }) {
 
   return (
     <GlassPanel className="p-5">
-      <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <label className="space-y-2">
           <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Player 1</span>
           <input
@@ -47,21 +47,26 @@ export default function MatchSetup({ difficulty, onStart }) {
             onChange={(event) => update('player2', event.target.value)}
           />
         </label>
-        <label className="space-y-2">
-          <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Rounds</span>
-          <select
-            className="h-12 w-full rounded-xl border border-slate-200 bg-white/80 px-4 font-bold outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/10 sm:w-28"
-            value={form.rounds}
-            onChange={(event) => update('rounds', event.target.value)}
-          >
-            {ROUND_COUNT_OPTIONS.map((rounds) => (
-              <option key={rounds} value={rounds}>
-                {rounds}
-              </option>
-            ))}
-          </select>
-        </label>
-        <Button className="sm:col-span-3" icon={FaPlay} type="submit">
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+          <label className="space-y-2">
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Rounds</span>
+            <select
+              className="h-12 w-full rounded-xl border border-slate-200 bg-white/80 px-4 font-bold outline-none focus:border-slate-950 focus:ring-4 focus:ring-slate-950/10 sm:w-32"
+              value={form.rounds}
+              onChange={(event) => update('rounds', event.target.value)}
+            >
+              {ROUND_COUNT_OPTIONS.map((rounds) => (
+                <option key={rounds} value={rounds}>
+                  {rounds}
+                </option>
+              ))}
+            </select>
+          </label>
+          <Button className="hidden sm:inline-flex sm:min-w-44" icon={FaPlay} type="submit">
+            Launch Match
+          </Button>
+        </div>
+        <Button className="sm:hidden" icon={FaPlay} type="submit">
           Launch Match
         </Button>
       </form>

@@ -86,7 +86,6 @@ export default function Game() {
           players={game.players}
           question={game.question}
           ropeOffset={game.ropeOffset}
-          shakeKey={game.shakeKey}
           status={game.status}
           timer={timer}
           totalRounds={game.totalRounds}

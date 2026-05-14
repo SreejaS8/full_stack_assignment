@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Confetti from 'react-confetti';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowRotateLeft, FaChartSimple, FaTrophy } from 'react-icons/fa6';
@@ -13,7 +13,6 @@ import { buildMatchPayload, formatSeconds } from '../utils/gameHelpers.js';
 export default function Result() {
   const navigate = useNavigate();
   const game = useGame();
-  const [saveState, setSaveState] = useState('idle');
   const hasSavedMatch = useRef(false);
   const matchId = useRef(crypto.randomUUID());
 
@@ -30,13 +29,10 @@ export default function Result() {
     const payload = buildMatchPayload(game, game.stats, matchId.current);
     localStorage.setItem('last-tugmath-match', JSON.stringify(payload));
 
-    setSaveState('saving');
-    saveMatch(payload)
-      .then(() => setSaveState('saved'))
-      .catch(() => setSaveState('local'));
+    saveMatch(payload).catch(() => {});
 
     return undefined;
-  }, [game, saveState]);
+  }, [game]);
 
   if (!game.winner) return null;
 
@@ -112,10 +108,6 @@ export default function Result() {
               </tbody>
             </table>
           </div>
-
-          <p className="mt-4 text-sm font-semibold text-slate-500">
-            Save status: {saveState === 'saved' ? 'Stored in MongoDB' : saveState === 'local' ? 'Stored locally, backend unavailable' : 'Saving match'}
-          </p>
         </GlassPanel>
       </div>
     </PageTransition>

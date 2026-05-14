@@ -49,7 +49,7 @@ export default function MatchHistory() {
 
       {status === 'offline' ? (
         <p className="rounded-2xl bg-white/64 px-4 py-4 text-sm font-bold text-slate-500 ring-1 ring-white/80">
-          Match history will appear here when the API and MongoDB are running.
+          Match history will appear here once the server is available.
         </p>
       ) : null}
 
